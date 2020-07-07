@@ -1,5 +1,5 @@
 import sys
-sys.path.append('data_common')
+sys.path.append('base_storage')
 
 from data_interface import StorageBase
 from uuid import uuid4
