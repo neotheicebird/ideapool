@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+click = "*"
+
+[packages]
+werkzeug = "*"
+maya = "*"
+boto3 = "*"
+dynamodb-json = "*"
+bloop = "*"
+click = "*"
+
+[requires]
+python_version = "3.6"
