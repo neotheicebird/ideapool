@@ -1,0 +1,13 @@
+{
+  "name": "ideapool",
+  "description": "",
+  "version": "0.1.0",
+  "dependencies": {},
+  "devDependencies": {
+    "dynamodb-admin": "^3.2.0",
+    "serverless-dynamodb-local": "^0.2.38",
+    "serverless-plugin-scripts": "^1.0.2",
+    "serverless-pseudo-parameters": "^2.5.0",
+    "serverless-python-requirements": "^5.0.1"
+  }
+}

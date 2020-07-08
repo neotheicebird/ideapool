@@ -119,27 +119,63 @@ class DynamodbStorage(StorageBase):
         return None
 
     def get_objs(self,
-                 obj_type,
                  key,
                  index_name,
-                 filter_conditions=None):
+                 filter_conditions=None,
+                 limit=None,
+                 exclusive_start_key=None):
         filter_by = Attr('active').eq(True) &\
                     Attr('read_only').not_exists()
 
         if filter_conditions:
             filter_by &= filter_conditions
 
-        resp = self._table.query(
-            KeyConditionExpression=key,
-            ScanIndexForward=False,
-            FilterExpression=filter_by,
-            IndexName=index_name
-        )
+        if exclusive_start_key:
+            if limit:
+                resp = self._table.query(
+                    KeyConditionExpression=key,
+                    ScanIndexForward=False,
+                    FilterExpression=filter_by,
+                    IndexName=index_name,
+                    Limit=limit,
+                    ExclusiveStartKey=exclusive_start_key
+                )
+            else:
+                resp = self._table.query(
+                    KeyConditionExpression=key,
+                    ScanIndexForward=False,
+                    FilterExpression=filter_by,
+                    IndexName=index_name,
+                    ExclusiveStartKey=exclusive_start_key
+                )
+        else:
+            if limit:
+                resp = self._table.query(
+                    KeyConditionExpression=key,
+                    ScanIndexForward=False,
+                    FilterExpression=filter_by,
+                    IndexName=index_name,
+                    Limit=limit,
+                )
+            else:
+                resp = self._table.query(
+                    KeyConditionExpression=key,
+                    ScanIndexForward=False,
+                    FilterExpression=filter_by,
+                    IndexName=index_name,
+                )
+
+        print("get_objs query response: ")
+        print(resp)
 
         if resp["Count"] > 0:
-            return resp["Items"]
+            items = []
+            for item in resp["Items"]:
+                items.append(self.clean(json_util.loads(json_util.dumps(item))))
+            resp['Items'] = items
+            return resp
         else:
-            return []
+            return None
 
     def delete(self, entity_id):
         item = self.get(entity_id)

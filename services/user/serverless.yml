@@ -1,0 +1,115 @@
+service: ip-user
+
+provider:
+  name: aws
+  runtime: python3.6
+  stage: ${opt:stage, 'dev'}
+  iamRoleStatements: # permissions for all of your functions can be set here
+    - Effect: Allow
+      Action: # Gives permission to DynamoDB tables in a specific region
+      - dynamodb:DescribeTable
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:*:*:*"
+  apiGateway:
+    restApiId:
+      'Fn::ImportValue': ip-${self:provider.stage}-ApiGateway-restApiId
+    restApiRootResourceId:
+      'Fn::ImportValue': ip-${self:provider.stage}-ApiGateway-rootResourceId
+  environment:
+    STAGE: ${self:provider.stage}
+    REGION: ${file(../../config.${self:provider.stage}.json):REGION}
+    AUTH0_DOMAIN: ${file(../../config.${self:provider.stage}.json):AUTH0_DOMAIN}
+    AUTH0_AUDIENCE: ${file(../../config.${self:provider.stage}.json):AUTH0_AUDIENCE}
+    AUTH0_CLIENT_ID: ${file(../../config.${self:provider.stage}.json):AUTH0_CLIENT_ID}
+    AUTH0_CLIENT_SECRET: ${file(../../config.${self:provider.stage}.json):AUTH0_CLIENT_SECRET}
+    AUTH0_MANAGEMENT_API_CLIENT_ID: ${file(../../config.${self:provider.stage}.json):AUTH0_MANAGEMENT_API_CLIENT_ID}
+    AUTH0_MANAGEMENT_API_CLIENT_SECRET: ${file(../../config.${self:provider.stage}.json):AUTH0_MANAGEMENT_API_CLIENT_SECRET}
+    AUTH0_CONNECTION: ${file(../../config.${self:provider.stage}.json):AUTH0_CONNECTION}
+    AUTH0_CLIENT_PUBLIC_KEY: ${file(../../public_key)}
+
+custom: ${file(../custom.yml)}
+
+package:
+  include:
+    - ../auth.py
+    - ../common.py
+    - ../../base_storage/*
+    - ../../base_storage/repo_interfaces/*
+    - ../../dynamodb_storage/*
+    - ../../dynamodb_storage/repositories/*
+
+
+functions:
+  signup:
+    handler: handler.signup
+    name: ${self:service}-${self:provider.stage}-signup
+    description: Handle signup request
+    timeout: 20
+    events:
+      - http:
+          path: users
+          method: post
+          cors: true
+          response:
+            headers:
+              Content-Type: "'application/json'"
+            template: $input.path('$.body')
+          integration: lambda
+
+
+  login:
+    handler: handler.login
+    name: ${self:service}-${self:provider.stage}-login
+    description: Handle login request
+    timeout: 20
+    events:
+      - http:
+          path: access-tokens
+          method: post
+          cors: true
+          response:
+            headers:
+              Content-Type: "'application/json'"
+            template: $input.path('$.body')
+          integration: lambda
+
+  refresh:
+    handler: handler.refresh
+    name: ${self:service}-${self:provider.stage}-refresh
+    description: Handle refresh request
+    timeout: 20
+    events:
+      - http:
+          path: access-tokens/refresh
+          method: post
+          cors: true
+          response:
+            headers:
+              Content-Type: "'application/json'"
+            template: $input.path('$.body')
+          integration: lambda
+
+  current_user:
+    handler: handler.current_user
+    name: ${self:service}-${self:provider.stage}-current-user
+    description: Handle current user request
+    timeout: 20
+    events:
+      - http:
+          path: me
+          method: get
+          cors: true
+          response:
+            headers:
+              Content-Type: "'application/json'"
+            template: $input.path('$.body')
+          integration: lambda
+
+
+plugins:
+  - serverless-python-requirements

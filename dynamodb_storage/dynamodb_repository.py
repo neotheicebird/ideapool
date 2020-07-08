@@ -5,12 +5,14 @@ src_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(src_path)
 
 from dynamodb_storage.repositories.idea import IdeaRepository
+from dynamodb_storage.repositories.user import UserRepository
 
 
 class Respository:
     def __init__(self, user_id, stage):
         self.repos = {
-            'idea': IdeaRepository(user_id, stage)
+            'idea': IdeaRepository(user_id, stage),
+            'user': UserRepository(user_id, stage),
         }
 
 

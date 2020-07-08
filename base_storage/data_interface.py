@@ -13,3 +13,9 @@ class StorageBase(metaclass=ABCMeta):
     @abstractmethod
     def delete(self, entity_id):
         pass
+
+    @abstractmethod
+    def get_objs(self,
+                 key,
+                 index_name):
+        pass

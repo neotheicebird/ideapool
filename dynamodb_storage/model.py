@@ -13,10 +13,10 @@ class IdeaPool(BaseModel):
     entity_id = Column(UUID, hash_key=True)
     version = Column(String, range_key=True)
 
-    obj_type = Column(String)
+    user_id = Column(String)
 
-    by_obj_type_and_version = GlobalSecondaryIndex(
+    by_user_id_and_version = GlobalSecondaryIndex(
         projection='all',
-        hash_key='obj_type',
+        hash_key='user_id',
         range_key='version',
     )

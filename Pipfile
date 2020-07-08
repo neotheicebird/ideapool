@@ -13,6 +13,9 @@ boto3 = "*"
 dynamodb-json = "*"
 bloop = "*"
 click = "*"
+requests = "*"
+python-jose = "*"
+six = "*"
 
 [requires]
 python_version = "3.6"

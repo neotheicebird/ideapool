@@ -13,3 +13,7 @@ python data_dynamodb/create_tables.py --stage test --db_endpoint http://localhos
 
 where `test` is the stage name and a corresponding `config.test.json` should be found in the parent directory.
 
+## References:
+
+Custom Authorizers: [https://www.alexdebrie.com/posts/lambda-custom-authorizers/](https://www.alexdebrie.com/posts/lambda-custom-authorizers/)
+
