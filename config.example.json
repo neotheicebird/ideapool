@@ -1,0 +1,10 @@
+{
+  "REGION": "us-east-1",
+  "AUTH0_DOMAIN": "https://accountname.auth0.com",
+  "AUTH0_AUDIENCE": "https://accountname.auth0.com/api/v2/",
+  "AUTH0_CLIENT_ID": "MXZ3XqaiiO6LYBxluIWapzjt5Hxxxxx",
+  "AUTH0_CLIENT_SECRET": "7lNcGBDaAeInI385yQL_2KzrPHnzFqhElT55OL3N3JNtyMazYfqfE1H4IoPxxxxx",
+  "AUTH0_MANAGEMENT_API_CLIENT_ID": "IYncRdHIJFLQ3jlgHdPbpm0s2icxxxxx",
+  "AUTH0_MANAGEMENT_API_CLIENT_SECRET": "YYEJVHEu8peiWUkBrkMAyM3pvyAeKrFsRApaU1UGmuHp8YTIHa5eqJYkgvdxxxxx",
+  "AUTH0_CONNECTION": "Username-Password-Authentication"
+}

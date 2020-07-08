@@ -30,7 +30,6 @@ provider:
     AUTH0_MANAGEMENT_API_CLIENT_ID: ${file(../../config.${self:provider.stage}.json):AUTH0_MANAGEMENT_API_CLIENT_ID}
     AUTH0_MANAGEMENT_API_CLIENT_SECRET: ${file(../../config.${self:provider.stage}.json):AUTH0_MANAGEMENT_API_CLIENT_SECRET}
     AUTH0_CONNECTION: ${file(../../config.${self:provider.stage}.json):AUTH0_CONNECTION}
-    AUTH0_CLIENT_PUBLIC_KEY: ${file(../../public_key)}
 
 custom: ${file(../custom.yml)}
 
@@ -55,12 +54,6 @@ functions:
           path: users
           method: post
           cors: true
-          response:
-            headers:
-              Content-Type: "'application/json'"
-            template: $input.path('$.body')
-          integration: lambda
-
 
   login:
     handler: handler.login
@@ -72,11 +65,6 @@ functions:
           path: access-tokens
           method: post
           cors: true
-          response:
-            headers:
-              Content-Type: "'application/json'"
-            template: $input.path('$.body')
-          integration: lambda
 
   refresh:
     handler: handler.refresh
@@ -88,11 +76,17 @@ functions:
           path: access-tokens/refresh
           method: post
           cors: true
-          response:
-            headers:
-              Content-Type: "'application/json'"
-            template: $input.path('$.body')
-          integration: lambda
+
+  logout:
+    handler: handler.logout
+    name: ${self:service}-${self:provider.stage}-logout
+    description: Handle logout request
+    timeout: 20
+    events:
+      - http:
+          path: access-tokens
+          method: delete
+          cors: true
 
   current_user:
     handler: handler.current_user
@@ -104,11 +98,9 @@ functions:
           path: me
           method: get
           cors: true
-          response:
-            headers:
-              Content-Type: "'application/json'"
-            template: $input.path('$.body')
-          integration: lambda
+          authorizer:
+            type: CUSTOM
+            authorizerId: ${cf:ip-auth-${self:provider.stage}.apiGatewayAuthorizer}
 
 
 plugins:

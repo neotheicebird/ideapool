@@ -20,6 +20,7 @@ def create_idea(event, context):
         }
 
     body["user_id"] = context.user_id
+    body["average_score"] = (int(body.get("impact", 0)) + int(body.get("ease", 0)) + int(body.get("confidence", 0))) / 3
 
     obj = context.repository.repos['idea'].save(body)
     obj["id"] = obj.pop("entity_id")
@@ -60,6 +61,7 @@ def update_idea(event, context):
 
     body["entity_id"] = entity_id
     body["user_id"] = context.user_id
+    body["average_score"] = (int(body.get("impact", 0)) + int(body.get("ease", 0)) + int(body.get("confidence", 0))) / 3
 
     obj = context.repository.repos['idea'].save(body)
 

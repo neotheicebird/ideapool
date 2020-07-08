@@ -139,5 +139,6 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-config.*.json
+config.test.json
+config.prod.json
 node_modules
