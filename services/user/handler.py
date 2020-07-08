@@ -250,7 +250,7 @@ def current_user(event, context):
         }
 
         return {
-            'statusCode': 201,
+            'statusCode': 200,
             'body': json.dumps(me),
             'headers': {'Content-Type': 'application/json'}
         }

@@ -24,21 +24,13 @@ class IdeaRepository(BaseRepository, IdeaRepositoryInterface):
         filter_conditions = Attr('obj_type').eq('idea')
 
         exclusive_start_key = None
-        for p in range(page):
-            resp = self.db.get_objs(key=key,
-                                    index_name='by_user_id_and_version',
-                                    filter_conditions=filter_conditions,
-                                    limit=10,
-                                    exclusive_start_key=exclusive_start_key)
-            print('get ideas resp')
-            print(resp)
-            if resp and 'LastEvaluatedKey' in resp:
-                exclusive_start_key = resp['LastEvaluatedKey']
-            else:
-                break
+        resp = self.db.get_objs(key=key,
+                                index_name='by_user_id_and_version',
+                                filter_conditions=filter_conditions,
+                                exclusive_start_key=exclusive_start_key)
 
         if resp and "Items" in resp:
-            return resp["Items"]
+            return resp["Items"][(page-1)*10:(page)*10]
         else:
             return []
 
